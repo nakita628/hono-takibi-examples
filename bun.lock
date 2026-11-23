@@ -2657,6 +2657,36 @@
         "typescript": "catalog:",
       },
     },
+    "apps/open-banking-uk-aisp": {
+      "name": "@apps/open-banking-uk-aisp",
+      "dependencies": {
+        "@angular/common": "catalog:",
+        "@angular/core": "catalog:",
+        "@hono/zod-openapi": "catalog:",
+        "@tanstack/angular-query-experimental": "catalog:",
+        "@tanstack/preact-query": "catalog:",
+        "@tanstack/react-query": "catalog:",
+        "@tanstack/solid-query": "catalog:",
+        "@tanstack/svelte-query": "catalog:",
+        "@tanstack/vue-query": "catalog:",
+        "hono": "catalog:",
+        "preact": "catalog:",
+        "react": "catalog:",
+        "rxjs": "catalog:",
+        "solid-js": "catalog:",
+        "svelte": "catalog:",
+        "swr": "catalog:",
+        "vue": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "@types/react": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/openai": {
       "name": "@apps/openai",
       "dependencies": {
@@ -2709,6 +2739,36 @@
       "devDependencies": {
         "@packages/tsconfig": "workspace:*",
         "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/openfeature-ofrep": {
+      "name": "@apps/openfeature-ofrep",
+      "dependencies": {
+        "@angular/common": "catalog:",
+        "@angular/core": "catalog:",
+        "@hono/zod-openapi": "catalog:",
+        "@tanstack/angular-query-experimental": "catalog:",
+        "@tanstack/preact-query": "catalog:",
+        "@tanstack/react-query": "catalog:",
+        "@tanstack/solid-query": "catalog:",
+        "@tanstack/svelte-query": "catalog:",
+        "@tanstack/vue-query": "catalog:",
+        "hono": "catalog:",
+        "preact": "catalog:",
+        "react": "catalog:",
+        "rxjs": "catalog:",
+        "solid-js": "catalog:",
+        "svelte": "catalog:",
+        "swr": "catalog:",
+        "vue": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "@types/react": "catalog:",
         "hono-takibi": "catalog:",
         "typescript": "catalog:",
       },
@@ -3751,6 +3811,36 @@
         "typescript": "catalog:",
       },
     },
+    "apps/unity-catalog": {
+      "name": "@apps/unity-catalog",
+      "dependencies": {
+        "@angular/common": "catalog:",
+        "@angular/core": "catalog:",
+        "@hono/zod-openapi": "catalog:",
+        "@tanstack/angular-query-experimental": "catalog:",
+        "@tanstack/preact-query": "catalog:",
+        "@tanstack/react-query": "catalog:",
+        "@tanstack/solid-query": "catalog:",
+        "@tanstack/svelte-query": "catalog:",
+        "@tanstack/vue-query": "catalog:",
+        "hono": "catalog:",
+        "preact": "catalog:",
+        "react": "catalog:",
+        "rxjs": "catalog:",
+        "solid-js": "catalog:",
+        "svelte": "catalog:",
+        "swr": "catalog:",
+        "vue": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "@types/react": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/unleash": {
       "name": "@apps/unleash",
       "dependencies": {
@@ -4010,7 +4100,7 @@
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
     "hono": "^4.13.13",
-    "hono-takibi": "^0.32.6",
+    "hono-takibi": "^0.33.1",
     "preact": "^11.2.0",
     "react": "^19.3.1",
     "rxjs": "^7.8.2",
@@ -4406,6 +4496,8 @@
 
     "@apps/onepassword-connect": ["@apps/onepassword-connect@workspace:apps/onepassword-connect"],
 
+    "@apps/open-banking-uk-aisp": ["@apps/open-banking-uk-aisp@workspace:apps/open-banking-uk-aisp"],
+
     "@apps/openai": ["@apps/openai@workspace:apps/openai"],
 
     "@apps/opencost": ["@apps/opencost@workspace:apps/opencost"],
@@ -4413,6 +4505,8 @@
     "@apps/opendota": ["@apps/opendota@workspace:apps/opendota"],
 
     "@apps/openfaas": ["@apps/openfaas@workspace:apps/openfaas"],
+
+    "@apps/openfeature-ofrep": ["@apps/openfeature-ofrep@workspace:apps/openfeature-ofrep"],
 
     "@apps/openmeter": ["@apps/openmeter@workspace:apps/openmeter"],
 
@@ -4559,6 +4653,8 @@
     "@apps/tyk": ["@apps/tyk@workspace:apps/tyk"],
 
     "@apps/typesense": ["@apps/typesense@workspace:apps/typesense"],
+
+    "@apps/unity-catalog": ["@apps/unity-catalog@workspace:apps/unity-catalog"],
 
     "@apps/unleash": ["@apps/unleash@workspace:apps/unleash"],
 
@@ -4934,7 +5030,7 @@
 
     "hono": ["hono@4.13.14", "", {}, "sha512-yhRLQ21U6qa9Hsu2N7Qcbh8tE+WKEcoErjIo56LeSGiGXGp9sA7UpE86Ui9uexb61KakiGwuHMn2QdV7w6i6kQ=="],
 
-    "hono-takibi": ["hono-takibi@0.32.6", "", { "dependencies": { "@apidevtools/swagger-parser": "^13.1.0", "@effect/platform-node": "4.1.4", "@typespec/compiler": "^1.17.0", "@typespec/openapi3": "^1.17.0", "effect": "4.1.4", "oxc-parser": "^0.158.0", "oxfmt": "^0.78.0" }, "bin": { "hono-takibi": "dist/cli.js" } }, "sha512-l87TCZv2FnZOX8XGFzNHvbOzQB3PwGBdWYdlwnmpqTEWjEdqAJiRlih/HsjIeCvWNmymOY3D35kSnjzSbkLkmg=="],
+    "hono-takibi": ["hono-takibi@0.33.1", "", { "dependencies": { "@apidevtools/swagger-parser": "^13.1.0", "@effect/platform-node": "4.1.4", "@typespec/compiler": "^1.17.0", "@typespec/openapi3": "^1.17.0", "effect": "4.1.4", "oxc-parser": "^0.158.0", "oxfmt": "^0.78.0" }, "bin": { "hono-takibi": "dist/cli.js" } }, "sha512-ffoqUwCkFEJW1ZhPdGR2uEO/KTBwyRNMY9OtyrXvEtrcct9QYhg8LMY7k3puXqwKJUucNEzMqX0l5yZozW4Tvw=="],
 
     "is-reference": ["is-reference@3.0.3", "", { "dependencies": { "@types/estree": "^1.0.6" } }, "sha512-ixkJoqQvAP88E6wLydLGGqCJsrFUnqoH6HnaczB8XmDH1oaWU+xxdptvikTgaEhtZ53Ky6YXiBuUI2WXLMCwjw=="],
 
