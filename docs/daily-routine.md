@@ -30,7 +30,7 @@ hono-takibi が出せるものすべて（routes・docs・type・client・rpc・
 ```bash
 git fetch origin main
 git status --short; git log --oneline origin/main..HEAD   # 前回の未コミット・未 push の残りがあれば、内容を確かめてから片付ける
-git checkout --detach origin/main                         # ローカルに main が無くても動く。push は HEAD:main で行う
+git checkout -B main origin/main                          # 作業は main ブランチで行う（ユーザーの指示）。ローカルに main が無くても動く
 ```
 
 ## 1. hono-takibi を最新に揃える
@@ -172,7 +172,7 @@ push:
 
 ```bash
 git fetch origin main && git rebase origin/main      # main が進んでいたら。競合したら止めて報告する
-git push origin HEAD:main                            # fast-forward だけ。force push はしない
+git push origin main                                 # fast-forward だけ。force push はしない
 ```
 
 - `bun.lock` が競合したら、`origin/main` 側を採用して `bun install` をやり直す（今日の workspace が再び載る）。

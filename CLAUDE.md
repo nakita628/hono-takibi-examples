@@ -11,5 +11,6 @@
 ## 権限（ユーザーの指示）
 
 - このリポジトリの `main` へは、いつでも直接 push してよい（2026-11-22 にユーザーが許可。PR は不要）。force push と履歴の書き換えは含まない。
+- 作業は基本的に `main` ブランチで行う（2026-11-23 にユーザーが指示）。別ブランチや detached HEAD で作業しない。
 - `nakita628/hono-takibi` には issue の起票とコメントをしてよい（2026-11-22 にユーザーが許可）。push、PR、クローズ、ラベル変更はしない。
 - CI（GitHub Actions）は使わない（2026-11-22 にユーザーの提案で削除）。push の前に [docs/daily-routine.md](docs/daily-routine.md) の「push 前の検査」を通す。
