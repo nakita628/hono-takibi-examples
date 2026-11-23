@@ -2,6 +2,10 @@
 
 Generation examples for [hono-takibi](https://github.com/nakita628/hono-takibi).
 
+Each `apps/<name>` is one OpenAPI definition, and its `hono-takibi.config.ts` generates everything hono-takibi can:
+routes, docs, types, the client, RPC, the hooks for seven libraries and the template.
+New apps are added every day by the routine in [docs/daily-routine.md](./docs/daily-routine.md).
+
 | App | Input | Output |
 | --- | --- | --- |
 | [petstore](./apps/petstore) | [openapi.json](https://petstore3.swagger.io/api/v3/openapi.json) | [routes.ts](./apps/petstore/src/routes.ts) · [api.md](./apps/petstore/src/api.md) |
