@@ -8,6 +8,7 @@ Each document has one `hono-takibi.config.ts` that generates everything hono-tak
 The template's handler stubs are filled with `throw new Error('Not implemented')` so that the code typechecks ([nakita628/hono-takibi#497](https://github.com/nakita628/hono-takibi/issues/497)).
 When one output stops the whole run, the config leaves that output out and says why in a comment.
 Typecheck results are in [docs/typecheck.md](./docs/typecheck.md); the Output column below links the routes and the docs.
+New documents are added every day by the routine in [docs/daily-routine.md](./docs/daily-routine.md).
 
 | App | Input | Output |
 | --- | --- | --- |
